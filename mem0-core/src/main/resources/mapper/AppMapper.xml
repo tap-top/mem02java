@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mem0.core.mapper.AppMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.mem0.core.entity.App">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="app_key" property="appKey" jdbcType="VARCHAR"/>
+        <result column="app_name" property="appName" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, app_key, app_name, description, status, created_at, updated_at
+    </sql>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM app
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据appKey查询 -->
+    <select id="selectByAppKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM app
+        WHERE app_key = #{appKey}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM app
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据状态查询 -->
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM app
+        WHERE status = #{status}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.mem0.core.entity.App" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app (app_key, app_name, description, status, created_at, updated_at)
+        VALUES (#{appKey}, #{appName}, #{description}, #{status}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.mem0.core.entity.App">
+        UPDATE app
+        SET app_name = #{appName},
+            description = #{description},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM app WHERE id = #{id}
+    </delete>
+
+</mapper> 

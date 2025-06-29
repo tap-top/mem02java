@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mem0.core.mapper.AgentMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.mem0.core.entity.Agent">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="app_id" property="appId" jdbcType="BIGINT"/>
+        <result column="agent_id" property="agentId" jdbcType="VARCHAR"/>
+        <result column="agent_name" property="agentName" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, app_id, agent_id, agent_name, description, status, created_at, updated_at
+    </sql>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM agent
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据appId和agentId查询 -->
+    <select id="selectByAppIdAndAgentId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM agent
+        WHERE app_id = #{appId} AND agent_id = #{agentId}
+    </select>
+
+    <!-- 根据appId查询 -->
+    <select id="selectByAppId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM agent
+        WHERE app_id = #{appId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM agent
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据状态查询 -->
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM agent
+        WHERE status = #{status}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.mem0.core.entity.Agent" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO agent (app_id, agent_id, agent_name, description, status, created_at, updated_at)
+        VALUES (#{appId}, #{agentId}, #{agentName}, #{description}, #{status}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.mem0.core.entity.Agent">
+        UPDATE agent
+        SET agent_name = #{agentName},
+            description = #{description},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM agent WHERE id = #{id}
+    </delete>
+
+</mapper> 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mem0.core.mapper.MemoryHistoryMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.mem0.core.entity.MemoryHistory">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="memory_id" property="memoryId" jdbcType="BIGINT"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="metadata" property="metadata" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, memory_id, content, metadata, version, created_at
+    </sql>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory_history
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据memoryId查询 -->
+    <select id="selectByMemoryId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory_history
+        WHERE memory_id = #{memoryId}
+        ORDER BY version DESC
+    </select>
+
+    <!-- 根据memoryId和版本号查询 -->
+    <select id="selectByMemoryIdAndVersion" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory_history
+        WHERE memory_id = #{memoryId} AND version = #{version}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.mem0.core.entity.MemoryHistory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO memory_history (memory_id, content, metadata, version, created_at)
+        VALUES (#{memoryId}, #{content}, #{metadata}, #{version}, NOW())
+    </insert>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM memory_history WHERE id = #{id}
+    </delete>
+
+    <!-- 根据memoryId删除 -->
+    <delete id="deleteByMemoryId" parameterType="java.lang.Long">
+        DELETE FROM memory_history WHERE memory_id = #{memoryId}
+    </delete>
+
+</mapper> 

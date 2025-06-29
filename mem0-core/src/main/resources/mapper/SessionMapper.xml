@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mem0.core.mapper.SessionMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.mem0.core.entity.Session">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="app_id" property="appId" jdbcType="BIGINT"/>
+        <result column="agent_id" property="agentId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="session_id" property="sessionId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="metadata" property="metadata" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, app_id, agent_id, user_id, session_id, status, metadata, created_at, updated_at
+    </sql>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM session
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据sessionId查询 -->
+    <select id="selectBySessionId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM session
+        WHERE session_id = #{sessionId}
+    </select>
+
+    <!-- 根据appId、agentId、userId查询 -->
+    <select id="selectByAppAgentUser" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM session
+        WHERE app_id = #{appId} AND agent_id = #{agentId} AND user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据状态查询 -->
+    <select id="selectByStatus" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM session
+        WHERE status = #{status}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.mem0.core.entity.Session" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO session (app_id, agent_id, user_id, session_id, status, metadata, created_at, updated_at)
+        VALUES (#{appId}, #{agentId}, #{userId}, #{sessionId}, #{status}, #{metadata}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.mem0.core.entity.Session">
+        UPDATE session
+        SET status = #{status},
+            metadata = #{metadata},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM session WHERE id = #{id}
+    </delete>
+
+    <!-- 根据sessionId删除 -->
+    <delete id="deleteBySessionId" parameterType="java.lang.String">
+        DELETE FROM session WHERE session_id = #{sessionId}
+    </delete>
+
+</mapper> 

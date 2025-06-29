@@ -1,0 +1,49 @@
+# 开发环境配置
+spring:
+  profiles:
+    active: dev
+  
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mem0?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: mem0
+    password: mem0pass123
+  
+  # Spring AI 配置
+  ai:
+    alibaba:
+      dashscope:
+        api-key: ${DASHSCOPE_API_KEY:your-dashscope-api-key-here}
+    dashscope:
+      chat:
+        options:
+          model: qwen-plus
+      embedding:
+        options:
+          model: text-embedding-v1
+
+# Elasticsearch 配置
+elasticsearch:
+  host: localhost
+  port: 9200
+  username: elastic
+  password: your_password
+  index-prefix: mem0_vectors
+
+# MyBatis 配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+# 日志配置
+logging:
+  level:
+    com.mem0: DEBUG
+    org.springframework.ai: DEBUG
+    com.alibaba.dashscope: DEBUG
+    com.alibaba.cloud.ai.dashscope: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" 

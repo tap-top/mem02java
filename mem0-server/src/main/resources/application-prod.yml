@@ -1,0 +1,53 @@
+# 生产环境配置
+spring:
+  profiles:
+    active: prod
+  
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/mem0?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${SPRING_DATASOURCE_USERNAME:mem0}
+    password: ${SPRING_DATASOURCE_PASSWORD:mem0pass123}
+  
+  # Spring AI 配置
+  ai:
+    alibaba:
+      dashscope:
+        api-key: ${DASHSCOPE_API_KEY}
+    dashscope:
+      chat:
+        options:
+          model: qwen-plus
+      embedding:
+        options:
+          model: text-embedding-v1
+
+# Elasticsearch 配置
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST:localhost}
+  port: ${ELASTICSEARCH_PORT:9200}
+  username: ${ES_USERNAME:elastic}
+  password: ${ES_PASSWORD:your_password}
+  index-prefix: mem0_vectors
+
+# MyBatis 配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  mapper-locations: classpath:mapper/*.xml
+
+# 日志配置
+logging:
+  level:
+    com.mem0: INFO
+    org.springframework.ai: INFO
+    com.alibaba.dashscope: INFO
+    com.alibaba.cloud.ai.dashscope: warn
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/mem0-java.log
+    max-size: 100MB
+    max-history: 30 

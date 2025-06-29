@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mem0.core.mapper.MemoryMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.mem0.core.entity.Memory">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="app_id" property="appId" jdbcType="BIGINT"/>
+        <result column="agent_id" property="agentId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="memory_id" property="memoryId" jdbcType="VARCHAR"/>
+        <result column="memory_type" property="memoryType" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="metadata" property="metadata" jdbcType="VARCHAR"/>
+        <result column="embedding_id" property="embeddingId" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, app_id, agent_id, user_id, memory_id, memory_type, content, metadata, 
+        embedding_id, version, created_at, updated_at
+    </sql>
+
+    <!-- 通用条件 -->
+    <sql id="Common_Where">
+        <where>
+            <if test="conditions.appId != null">
+                AND app_id = #{conditions.appId}
+            </if>
+            <if test="conditions.agentId != null">
+                AND agent_id = #{conditions.agentId}
+            </if>
+            <if test="conditions.userId != null">
+                AND user_id = #{conditions.userId}
+            </if>
+            <if test="conditions.memoryType != null">
+                AND memory_type = #{conditions.memoryType}
+            </if>
+            <if test="conditions.memoryId != null">
+                AND memory_id = #{conditions.memoryId}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据memoryId查询 -->
+    <select id="selectByMemoryId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory
+        WHERE memory_id = #{memoryId}
+    </select>
+
+    <!-- 根据appId、agentId、userId查询 -->
+    <select id="selectByAppAgentUser" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory
+        WHERE app_id = #{appId} AND agent_id = #{agentId} AND user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据appId、agentId、userId和记忆类型查询 -->
+    <select id="selectByAppAgentUserAndType" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory
+        WHERE app_id = #{appId} AND agent_id = #{agentId} AND user_id = #{userId} 
+        AND memory_type = #{memoryType}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据条件查询 -->
+    <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory
+        <include refid="Common_Where"/>
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="selectWithPagination" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM memory
+        <include refid="Common_Where"/>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计记忆总数 -->
+    <select id="countTotal" resultType="long">
+        SELECT COUNT(*)
+        FROM memory
+    </select>
+
+    <!-- 根据条件统计记忆数量 -->
+    <select id="countByCondition" parameterType="java.util.Map" resultType="long">
+        SELECT COUNT(*)
+        FROM memory
+        <include refid="Common_Where"/>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.mem0.core.entity.Memory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO memory (app_id, agent_id, user_id, memory_id, memory_type, content, 
+                           metadata, embedding_id, version, created_at, updated_at)
+        VALUES (#{appId}, #{agentId}, #{userId}, #{memoryId}, #{memoryType}, #{content}, 
+                #{metadata}, #{embeddingId}, #{version}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.mem0.core.entity.Memory">
+        UPDATE memory
+        SET content = #{content},
+            metadata = #{metadata},
+            embedding_id = #{embeddingId},
+            version = #{version},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM memory WHERE id = #{id}
+    </delete>
+
+    <!-- 根据memoryId删除 -->
+    <delete id="deleteByMemoryId" parameterType="java.lang.String">
+        DELETE FROM memory WHERE memory_id = #{memoryId}
+    </delete>
+
+    <!-- 根据appId、agentId、userId删除 -->
+    <delete id="deleteByAppAgentUser">
+        DELETE FROM memory 
+        WHERE app_id = #{appId} AND agent_id = #{agentId} AND user_id = #{userId}
+    </delete>
+
+</mapper> 
