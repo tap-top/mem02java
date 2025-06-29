@@ -1,5 +1,11 @@
 # Mem0 Java
 
+> **📢 项目说明**: 这是 [mem0ai/mem0](https://github.com/mem0ai/mem0) 的 **Java 实现版本**，感谢原项目团队提供的优秀创意和架构设计！
+
+> **🙏 致谢**: 本项目基于 [mem0ai/mem0](https://github.com/mem0ai/mem0) 的创意和理念开发，原项目是一个优秀的 AI 记忆管理系统，为 AI 助手和智能体提供智能记忆层。我们在此向原项目团队致以诚挚的感谢！
+
+---
+
 基于 Java 的多租户 AI 记忆系统，使用 Spring AI 和 Qwen 大模型，MySQL + MyBatis 做持久化，Elasticsearch 做向量存储。
 
 ## 项目特性
