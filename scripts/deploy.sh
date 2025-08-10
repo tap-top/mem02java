@@ -131,7 +131,7 @@ start_services() {
     
     # 初始化数据库
     print_step "初始化数据库..."
-    docker-compose exec -T mysql mysql -u root -pmem0pass123 < scripts/init-mysql.sql
+    docker-compose exec -T mysql mysql -u root -pmem0root123 < scripts/init-mysql.sql
     
     # 启动应用
     print_step "启动 Mem0 应用..."
